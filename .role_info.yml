@@ -1,8 +1,9 @@
 ---
-gid: 12345
+gid: 45814
 name: dotfiles
 desc: Install and configure my dotfiles on your system.
 deps:
   - tehtbl.bootstrap
+  - tehtbl.common
 tags:
   - dotfiles

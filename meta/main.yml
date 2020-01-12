@@ -2,7 +2,7 @@
 galaxy_info:
   author: https://github.com/tehtbl
   role_name: dotfiles
-  description: Install and configure dotfiles on a system.
+  description: Install and configure my dotfiles on your system.
   license: MIT License
   company: None
   min_ansible_version: 2.8
@@ -19,7 +19,6 @@ galaxy_info:
 
   galaxy_tags:
     - dotfiles
-    - installer
     - client
     - server
     - system
@@ -29,3 +28,4 @@ galaxy_info:
 
 dependencies:
   - tehtbl.bootstrap
+  - tehtbl.common

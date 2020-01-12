@@ -3,8 +3,19 @@
 # vars file for dotfiles
 # ------------------------------------------------------------------------
 
-_dotfiles_packages:
+_dotfiles_build_packages:
   default:
-    - dotfiles
+    - make
+    - git
+    - unzip
+    - fonts-powerline
+    - powerline
+    - python3-powerline
+    - fontconfig
+    - tmux
+    - unzip
+    - wget
 
-dotfiles_packages: "{{ _dotfiles_packages[ansible_os_family] | default(_dotfiles_packages['default']) }}"
+dotfiles_build_packages: "{{ _dotfiles_build_packages[ansible_os_family] | default(_dotfiles_build_packages['default']) }}"
+
+dotfiles_working_dir: "/tmp/dotfiles"

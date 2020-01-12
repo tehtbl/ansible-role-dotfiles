@@ -3,25 +3,80 @@
 # tasks file for dotfiles
 # ------------------------------------------------------------------------
 
-- name: install dotfiles
+- name: install build packages
   package:
-    name: "{{ dotfiles_packages }}"
+    name: "{{ dotfiles_build_packages }}"
     state: present
-  register: dotfiles_install_dotfiles
-  until: dotfiles_install_dotfiles is succeeded
+  register: install_dotfiles_build
+  until: install_dotfiles_build is succeeded
   retries: 3
+  tags:
+    - molecule-idempotence-notest
 
-- name: configure dotfiles
-  template:
-    src: "{{ dotfiles_config_file }}.j2"
-    dest: "{{ dotfiles_config_directory }}/{{ dotfiles_config_file }}"
-  notify:
-    - restart dotfiles
+# ------------------------------------------------------------------------
+# install dotfiles
+# ------------------------------------------------------------------------
+- name: make sure dotfiles working dir does not exist
+  file:
+    path: "{{ dotfiles_working_dir }}"
+    state: absent
 
-- name: start and enable dotfiles
-  service:
-    name: "{{ dotfiles_service }}"
-    state: started
-    enabled: true
-  when:
-    - ansible_virtualization_type != "docker"
+- name: checkout dotfiles repo
+  git:
+    repo: "{{ dotfiles_gh_repo }}"
+    dest: "{{ dotfiles_working_dir }}"
+  tags:
+    - skip_ansible_lint
+    - molecule-idempotence-notest
+
+- name: make sure dir exist with correct perms
+  file:
+    path: "{{ item.path }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0755')  }}"
+    state: directory
+    recurse: true
+  with_items:
+    - {path: "{{ dotfiles_working_dir }}"}
+  tags:
+    - molecule-idempotence-notest
+
+# - name: make all for root
+#   make:
+#     chdir: "{{ dotfiles_working_dir }}"
+#     target: install
+#   become: yes
+#   become_user: "root"
+
+- name: make install all dotfiles for users
+  make:
+    chdir: "{{ dotfiles_working_dir }}"
+    target: all
+  become: true
+  become_user: "{{ item }}"
+  with_items:
+    - "{{ dotfiles_users }}"
+  tags:
+    - molecule-idempotence-notest
+
+- name: cleanup, make sure dotfilestbl_dotfiledir does not exist
+  file:
+    path: "{{ dotfiles_working_dir }}"
+    state: absent
+  tags:
+    - molecule-idempotence-notest
+
+# ------------------------------------------------------------------------
+# cleanup
+# ------------------------------------------------------------------------
+
+- name: uninstall build packages
+  package:
+    name: "{{ dotfiles_build_packages }}"
+    state: absent
+  register: uninstall_dotfiles_build
+  until: uninstall_dotfiles_build is succeeded
+  retries: 3
+  tags:
+    - molecule-idempotence-notest

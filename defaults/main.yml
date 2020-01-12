@@ -3,3 +3,7 @@
 # defaults file for dotfiles
 # ------------------------------------------------------------------------
 
+dotfiles_gh_repo: "https://github.com/tehtbl/dotfiles_tbl_basic.git"
+
+dotfiles_users:
+  - root
