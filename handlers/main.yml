@@ -1,0 +1,11 @@
+---
+# ------------------------------------------------------------------------
+# handlers file for dotfiles
+# ------------------------------------------------------------------------
+
+- name: restart dotfiles
+  service:
+    name: "{{ dotfiles_service }}"
+    state: restarted
+  when:
+    - ansible_virtualization_type != "docker"

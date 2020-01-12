@@ -1,0 +1,27 @@
+---
+# ------------------------------------------------------------------------
+# tasks file for dotfiles
+# ------------------------------------------------------------------------
+
+- name: install dotfiles
+  package:
+    name: "{{ dotfiles_packages }}"
+    state: present
+  register: dotfiles_install_dotfiles
+  until: dotfiles_install_dotfiles is succeeded
+  retries: 3
+
+- name: configure dotfiles
+  template:
+    src: "{{ dotfiles_config_file }}.j2"
+    dest: "{{ dotfiles_config_directory }}/{{ dotfiles_config_file }}"
+  notify:
+    - restart dotfiles
+
+- name: start and enable dotfiles
+  service:
+    name: "{{ dotfiles_service }}"
+    state: started
+    enabled: true
+  when:
+    - ansible_virtualization_type != "docker"
