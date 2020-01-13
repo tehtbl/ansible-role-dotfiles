@@ -5,5 +5,6 @@ desc: Install and configure my dotfiles on your system.
 deps:
   - tehtbl.bootstrap
   - tehtbl.common
+  - tehtbl.tmux
 tags:
   - dotfiles
