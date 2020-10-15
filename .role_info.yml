@@ -2,7 +2,6 @@
 gid: 45814
 name: dotfiles
 desc: Install and configure my dotfiles on your system.
-deps:
-  - tehtbl.bootstrap
+deps: []
 tags:
   - dotfiles
